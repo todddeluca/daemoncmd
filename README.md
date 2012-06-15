@@ -5,9 +5,9 @@ My first introduction to running a command as a daemon looked like this:
 
     nohup mycommand --myoption myarg >/dev/null 2>/dev/null &
 
-While this is a good for doing some development work, a daemon requires quite a
-number of other things to happen.  The wikipedia page
-http://en.wikipedia.org/wiki/Daemon\_(computing) says the following needs to
+While this is a good for doing some development work, a proper daemon requires
+quite a number of other things to happen.  The wikipedia page
+http://en.wikipedia.org/wiki/Daemon_(computing) says the following needs to
 happen:
 
 - Dissociating from the controlling tty
@@ -42,12 +42,12 @@ Using it is as simple as:
 
 See the Usage section for more details.
 
-For more information on daemons in python, see:
+For more information on daemons and daemons in python, see:
 
 * http://pypi.python.org/pypi/python-daemon
 * http://www.python.org/dev/peps/pep-3143/
 * http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
-* http://en.wikipedia.org/wiki/Daemon\_(computing)
+* http://en.wikipedia.org/wiki/Daemon_(computing)
 
 
 ## Alternatives
