@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 '''
 For more information on daemons in python, see:
@@ -8,8 +8,9 @@ For more information on daemons in python, see:
 * http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
 * http://en.wikipedia.org/wiki/Daemon_(computing)
 
-Similar implementations:
+Here are some similar implementations:
 
+* http://pypi.python.org/pypi/zdaemon/2.0.4
 * https://github.com/indexzero/forever
 
 This module has two separate uses cases: 
@@ -23,12 +24,12 @@ to interact with the process.
 
 Usage examples:
 
-    python daemoncmd.py start --pidfile /tmp/daemon.pid \
+    daemoncmd start --pidfile /tmp/daemon.pid \
             --stdout /tmp/daemon.log --stderr /tmp/daemon.log sleep 100
-    python daemoncmd.py restart --pidfile /tmp/daemon.pid \
+    daemoncmd restart --pidfile /tmp/daemon.pid \
             --stdout /tmp/daemon.log --stderr /tmp/daemon.log sleep 100
-    python daemoncmd.py status --pidfile /tmp/daemon.pid
-    python daemoncmd.py stop --pidfile /tmp/daemon.pid
+    daemoncmd status --pidfile /tmp/daemon.pid
+    daemoncmd stop --pidfile /tmp/daemon.pid
 
 Another use case is forking the current process into a daemon.  According
 to pep 3143, forking as a daemon might be done by the standard library some
@@ -47,19 +48,20 @@ Or from the command line:
     python -c 'import daemoncmd, mytask; daemoncmd.daemonize(); mytask.doit()'
 
 Other usage notes:
+
 * The command should not daemonize itself, since that is what this script does
   and it would make the pid in the pidfile incorrect.
 * The command should be refer to the absolute path of the executable, since
   daemonization sets the cwd to '/'.  More generally, do not assume what the
   cwd is.
-* If daemoncmd.py is run by monit, etc., PATH and other env vars might be
+* If daemoncmd is run by monit, etc., PATH and other env vars might be
   restricted for security reasons.
-* daemoncmd.py does not try to run the daemon as a particular uid.  That would
+* daemoncmd does not try to run the daemon as a particular uid.  That would
   be handled by a process manager like monit, launchd, init, god, etc.
 * When running under monit, etc., pass environment variables to the command
   like so:
 
-    FOO=testing ./daemoncmd.py start --pidfile /tmp/daemon.pid \
+    FOO=testing daemoncmd start --pidfile /tmp/daemon.pid \
             --stdout /tmp/daemon.log printenv FOO
 '''
 
@@ -68,14 +70,7 @@ import sys
 import os
 import signal
 import errno
-import argparse
 import time
-
-
-START = 'start'
-STOP = 'stop'
-RESTART = 'restart'
-STATUS = 'status'
 
 
 def start(argv, pidfile, stdin='/dev/null', stdout='/dev/null',
@@ -280,78 +275,6 @@ def running(pid):
     return True
 
 
-def main():    
-    # daemoncmd.py <command>
-    # daemoncmd.py start --pidfile <file> [--stdin <file>] [--stdout <file>] \
-    #   [--stderr <file>] <command>
-    # daemoncmd.py restart --pidfile <file> [--stdin <file>] [--stdout <file>]\
-    #   [--stderr <file>] <command>
-    # daemoncmd.py stop --pidfile <file>
-    # daemoncmd.py status --pidfile <file>
-
-    parser = argparse.ArgumentParser(
-        description=('Start, stop, restart or get the status of a daemon '
-                     'that runs a command.'))
-    subparsers = parser.add_subparsers(dest='action')
-
-    # create the parser for the "start" command
-    startParser = subparsers.add_parser('start', 
-                                        help='start a daemon to run a command')
-    startParser.add_argument(
-        '--pidfile', required=True, 
-        help='file in which to store the pid of the started daemon process')
-    startParser.add_argument('--stdin', default='/dev/null', 
-                             help='redirect daemon stdin from this file')
-    startParser.add_argument('--stdout', default='/dev/null', 
-                             help='redirect daemon stdout to this file')
-    startParser.add_argument('--stderr', default='/dev/null', 
-                             help='redirect daemon stderr to this file')
-    startParser.add_argument(
-        'cmd', 
-        help=('the executable/command that the daemon will run.  i.e. a '
-              'server that listens on a port for incoming connections.'))
-    startParser.add_argument('args', nargs='*', 
-                             help='options or arguments to the command')
-    
-    stopParser = subparsers.add_parser('stop', help='stop a running daemon')
-    stopParser.add_argument('--pidfile', required=True, 
-                            help='file containing the pid of daemon process')
-
-    stopParser = subparsers.add_parser(
-        'status', help='print the status of a daemon process')
-    stopParser.add_argument('--pidfile', required=True, 
-                            help='file containing the pid of daemon process')
-
-    restartParser = subparsers.add_parser(
-        'restart', help='restart a daemon to run a command')
-    restartParser.add_argument(
-        '--pidfile', required=True, 
-        help='file in which to store the pid of the started daemon process')
-    restartParser.add_argument('--stdin', default='/dev/null', 
-                               help='redirect daemon stdin from this file')
-    restartParser.add_argument('--stdout', default='/dev/null', 
-                               help='redirect daemon stdout to this file')
-    restartParser.add_argument('--stderr', default='/dev/null', 
-                               help='redirect daemon stderr to this file')
-    restartParser.add_argument(
-        'cmd', 
-        help=('the executable/command that the daemon will run.  i.e. a '
-              'server that listens on a port for incoming connections.'))
-    restartParser.add_argument('args', nargs='*', 
-                               help='options or arguments to the command')
-
-    args = parser.parse_args()
-    
-    if args.action == START:
-        start([args.cmd] + args.args, args.pidfile, args.stdin, args.stdout, args.stderr)
-    elif args.action == RESTART:
-        restart([args.cmd] + args.args, args.pidfile, args.stdin, args.stdout, args.stderr)
-    elif args.action == STOP:
-        stop(args.pidfile)
-    elif args.action == STATUS:
-        status(args.pidfile)
-        
-    
 if __name__ == '__main__':
-    main()
+    pass
 
