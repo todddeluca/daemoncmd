@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'daemoncmd', # pypi project name
-    version = '0.1.0',
+    version = '0.1.1',
     license = 'MIT',
     description = ('Turn any command line into a daemon with a pidfile and ' +
                    'start, stop, restart, and status commands.'),
