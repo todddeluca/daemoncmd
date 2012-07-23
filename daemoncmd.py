@@ -245,7 +245,10 @@ def getpid(pidfile):
     pid = None
     if os.path.isfile(pidfile):
         with open(pidfile) as fh:
-            pid = int(fh.read().strip())
+            try:
+                pid = int(fh.read().strip())
+            except ValueError:
+                pass
     return pid
 
 
