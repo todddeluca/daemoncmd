@@ -112,7 +112,7 @@ def stop(pidfile):
         sys.stderr.write(('Warning: pid "%s" in pid file "%s" is already not '
                           'running.\n' % (pid, pidfile)))
     else:
-        sys.stdout.write('Stopping process. pid={}\n'.format(pid))
+        sys.stdout.write('Stopping process. pid={0}\n'.format(pid))
         try:
             os.kill(pid, signal.SIGTERM)
             # a pause, so daemon will have a chance to stop before it gets restarted.
@@ -138,7 +138,7 @@ def status(pidfile):
     pidfile = os.path.abspath(pidfile)
     pid = getpid(pidfile)
     if pid and running(pid):
-        sys.stdout.write('process running; pid={}\n'.format(pid))
+        sys.stdout.write('process running; pid={0}\n'.format(pid))
     else:
         sys.stdout.write('process stopped\n')
         
@@ -245,7 +245,10 @@ def getpid(pidfile):
     pid = None
     if os.path.isfile(pidfile):
         with open(pidfile) as fh:
-            pid = int(fh.read().strip())
+            try:
+                pid = int(fh.read().strip())
+            except ValueError:
+                pass
     return pid
 
 
@@ -254,7 +257,7 @@ def setpid(pid, pidfile):
     save pid to pidfile
     '''
     with open(pidfile, 'w') as fh:
-        fh.write('{}\n'.format(pid))
+        fh.write('{0}\n'.format(pid))
 
 
 def running(pid):
