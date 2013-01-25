@@ -147,7 +147,7 @@ Other usage notes:
 
 * The command should not daemonize itself, since that is what this script does
   and it would make the pid in the pidfile incorrect.
-* The command should be refer to the absolute path of the executable, since
+* The command should refer to the absolute path of the executable, since
   daemonization sets the cwd to '/'.  More generally, do not assume what the
   cwd is.
 * If daemoncmd is run by monit, etc., PATH and other env vars might be
@@ -157,7 +157,7 @@ Other usage notes:
 * When running under monit, etc., pass environment variables to the command
   like so:
 
-    FOO=testing daemoncmd start --pidfile /tmp/daemon.pid \
+        FOO=testing daemoncmd start --pidfile /tmp/daemon.pid \
             --stdout /tmp/daemon.log printenv FOO
 
 
