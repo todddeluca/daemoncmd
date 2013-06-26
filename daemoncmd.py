@@ -65,12 +65,16 @@ Other usage notes:
             --stdout /tmp/daemon.log printenv FOO
 '''
 
+__version__ = '0.2.0'
 
 import sys
 import os
 import signal
 import errno
 import time
+import argparse
+
+
 
 
 def start(argv, pidfile, stdin='/dev/null', stdout='/dev/null',
@@ -278,6 +282,78 @@ def running(pid):
     return True
 
 
+def main():    
+    # daemoncmd <command>
+    # daemoncmd start --pidfile <file> [--stdin <file>] [--stdout <file>] \
+    #   [--stderr <file>] <command>
+    # daemoncmd restart --pidfile <file> [--stdin <file>] [--stdout <file>]\
+    #   [--stderr <file>] <command>
+    # daemoncmd stop --pidfile <file>
+    # daemoncmd status --pidfile <file>
+
+    parser = argparse.ArgumentParser(
+        description=('Turn any command into a daemon.  Use start, stop, ' +
+                     'restart, and status to control the daemon.'))
+    subparsers = parser.add_subparsers(dest='action')
+
+    # create the parser for the "start" command
+    startParser = subparsers.add_parser('start', 
+                                        help='Start a daemon to run a command')
+    startParser.add_argument(
+        '--pidfile', required=True, 
+        help='file in which to store the pid of the started daemon process')
+    startParser.add_argument('--stdin', default='/dev/null', 
+                             help='Redirect daemon stdin from this file')
+    startParser.add_argument('--stdout', default='/dev/null', 
+                             help='Redirect daemon stdout to this file')
+    startParser.add_argument('--stderr', default='/dev/null', 
+                             help='Redirect daemon stderr to this file')
+    startParser.add_argument(
+        'cmd', 
+        help=('The executable/command that the daemon will run.  i.e. a '
+              'server that listens on a port for incoming connections.'))
+    startParser.add_argument('args', nargs='*', 
+                             help='options or arguments to the command')
+    
+    stopParser = subparsers.add_parser('stop', help='Stop a running daemon')
+    stopParser.add_argument('--pidfile', required=True, 
+                            help='file containing the pid of daemon process')
+
+    stopParser = subparsers.add_parser(
+        'status', help='Print the status of a daemon process')
+    stopParser.add_argument('--pidfile', required=True, 
+                            help='file containing the pid of daemon process')
+
+    restartParser = subparsers.add_parser(
+        'restart', help='Restart a daemon to run a command')
+    restartParser.add_argument(
+        '--pidfile', required=True, 
+        help='file in which to store the pid of the started daemon process')
+    restartParser.add_argument('--stdin', default='/dev/null', 
+                               help='Redirect daemon stdin from this file')
+    restartParser.add_argument('--stdout', default='/dev/null', 
+                               help='Redirect daemon stdout to this file')
+    restartParser.add_argument('--stderr', default='/dev/null', 
+                               help='Redirect daemon stderr to this file')
+    restartParser.add_argument(
+        'cmd', 
+        help=('The executable/command that the daemon will run.  i.e. a '
+              'server that listens on a port for incoming connections.'))
+    restartParser.add_argument('args', nargs='*', 
+                               help='options or arguments to the command')
+
+    args = parser.parse_args()
+
+    if args.action == 'start':
+        start([args.cmd] + args.args, args.pidfile, args.stdin, args.stdout, args.stderr)
+    elif args.action == 'restart':
+        restart([args.cmd] + args.args, args.pidfile, args.stdin, args.stdout, args.stderr)
+    elif args.action == 'stop':
+        stop(args.pidfile)
+    elif args.action == 'status':
+        status(args.pidfile)
+
+
 if __name__ == '__main__':
-    pass
+    main()
 

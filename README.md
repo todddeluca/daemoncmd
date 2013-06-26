@@ -7,7 +7,7 @@ My first introduction to running a command as a daemon looked like this:
 
 While this is a good for doing some development work, a proper daemon requires
 quite a number of other things to happen.  The wikipedia page
-http://en.wikipedia.org/wiki/Daemon_(computing) says the following needs to
+http://en.wikipedia.org/wiki/Daemon\_(computing) says the following needs to
 happen:
 
 - Dissociating from the controlling tty
@@ -44,33 +44,34 @@ See the Usage section for more details.
 
 For more information on daemons and daemons in python, see:
 
-* http://pypi.python.org/pypi/python-daemon
-* http://www.python.org/dev/peps/pep-3143/
-* http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
-* http://en.wikipedia.org/wiki/Daemon_(computing)
+- http://pypi.python.org/pypi/python-daemon
+- http://www.python.org/dev/peps/pep-3143/
+- http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
+- http://en.wikipedia.org/wiki/Daemon\_(computing)
 
 
 ## Alternatives
 
 Here are some projects that are similar in scope to daemoncmd:
 
-* http://pypi.python.org/pypi/zdaemon/2.0.4, and see
+- http://pypi.python.org/pypi/zdaemon/2.0.4, and see
   http://ridingpython.blogspot.cz/2011/08/turning-your-python-script-into-linux.html
   for a description.
-* https://github.com/indexzero/forever
+- https://github.com/indexzero/forever
 
 While daemoncmd is a great way to start running a daemon, there are many
 programs designed to run and monitor processes in a way that is more robust and
 full-featured than simply starting your own daemon.  Here is a list of some of
 them (see http://news.ycombinator.com/item?id=1368855 for a discussion):
 
+- launchd http://launchd.macosforge.org/
+- upstart http://upstart.ubuntu.com/
 - monit http://mmonit.com/monit/
 - supervisord http://supervisord.org/
+- daemontools http://cr.yp.to/daemontools.html
 - daemonize http://bmc.github.com/daemonize/
 - runit http://smarden.sunsite.dk/runit/
 - perp http://b0llix.net/perp/
-- launchd http://launchd.macosforge.org/
-- daemontools http://cr.yp.to/daemontools.html
 
 For production systems, I recommend using a tool like one of these.  I have
 used supervisord and monit before.  Some of these tools work with daemons, like
@@ -111,8 +112,8 @@ Clone and install daemoncmd:
 
 This module has two separate uses cases: 
     
-* running a command as a daemon process
-* forking the current python process as a daemon.
+- running a command as a daemon process
+- forking the current python process as a daemon.
 
 Daemonizing a command allows one to start, stop, and restart a non-daemon
 command as a daemon process.  This requires specifying a pid file which is used
@@ -145,16 +146,16 @@ Or from the command line:
 
 Other usage notes:
 
-* The command should not daemonize itself, since that is what this script does
+- The command should not daemonize itself, since that is what this script does
   and it would make the pid in the pidfile incorrect.
-* The command should refer to the absolute path of the executable, since
-  daemonization sets the cwd to '/'.  More generally, do not assume what the
-  cwd is.
-* If daemoncmd is run by monit, etc., PATH and other env vars might be
+- The command should refer to the absolute path of the executable, since
+  daemonization sets the current working directory (cwd) to '/'.  More
+  generally, do not assume what the cwd is.
+- If daemoncmd is run by monit, etc., PATH and other env vars might be
   restricted for security reasons.
-* daemoncmd does not try to run the daemon as a particular uid.  That would
+- daemoncmd does not try to run the daemon as a particular uid.  That would
   be handled by a process manager like monit, launchd, init, god, etc.
-* When running under monit, etc., pass environment variables to the command
+- When running under monit, etc., pass environment variables to the command
   like so:
 
         FOO=testing daemoncmd start --pidfile /tmp/daemon.pid \

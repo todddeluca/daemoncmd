@@ -1,0 +1,11 @@
+*.pyc
+.coverage
+.project
+.pydevproject
+*~
+
+# Ingore python packaging files/dirs
+/build/
+/dist/
+/*.egg-info/
+

@@ -1,10 +1,23 @@
 
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
+
+def version(modfile):
+    '''
+    Parse version from module without importing or evaluating the code.
+    The module should define a __version__ variable like __version__ = '2.0.1'.
+    '''
+    import re
+    with open(modfile) as fh:
+        for line in fh:
+            m = re.search(r"^__version__ = '([^']+)'$", line)
+            if m:
+                return m.group(1)
+    raise Exception('No __version__ string found in {fn}'.format(fn=modfile))
 
 setup(
     name = 'daemoncmd', # pypi project name
-    version = '0.1.1',
+    version = version('daemoncmd.py'),
     license = 'MIT',
     description = ('Turn any command line into a daemon with a pidfile and ' +
                    'start, stop, restart, and status commands.'),
@@ -12,7 +25,7 @@ setup(
                                          'README.md')).read(),
     keywords = ('daemon python cli init nohup commandline executable ' +
                 'script pidfile'),
-    scripts = ['bin/daemoncmd'],
+    entry_points={'console_scripts': ['daemoncmd = daemoncmd:main']},
     url = 'https://github.com/todddeluca/daemoncmd',
     author = 'Todd Francis DeLuca',
     author_email = 'todddeluca@yahoo.com',
