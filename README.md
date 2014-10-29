@@ -95,7 +95,7 @@ request on github, https://github.com/todddeluca/daemoncmd.
 
 ### Install from pypi.python.org
 
-Download and install python-vagrant:
+Download and install daemoncmd:
 
     pip install daemoncmd
 
